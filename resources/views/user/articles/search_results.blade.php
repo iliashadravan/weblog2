@@ -76,6 +76,8 @@
                     <p><strong>Writer:</strong> {{ $article->user ? $article->user->name : 'Anonymous' }}</p>
                     <p><strong>Likes:</strong> {{ $article->likes->count() }}</p>
                     <p><strong>Rating:</strong> {{ $article->averageRating() ?? 'No ratings yet' }}</p>
+                    <p><strong>Publication Date </strong>{{ Verta::instance($article->created_at)->timezone('Asia/Tehran') }}</p>
+
 
                     <p><strong>Categories:</strong>
                         @foreach($article->categories as $category)

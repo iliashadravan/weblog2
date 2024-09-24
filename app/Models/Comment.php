@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected $fillable = ['body', 'user_id' , 'is_visible'];
+    protected $fillable = ['body', 'user_id', 'is_visible'];
 
 // رابطه چند شکلی
     public function commentable()

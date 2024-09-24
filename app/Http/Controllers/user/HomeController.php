@@ -5,7 +5,7 @@ namespace App\Http\Controllers\user;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 
-class IndexController extends Controller
+class HomeController extends Controller
 {
     public function showArticle()
     {
@@ -15,12 +15,12 @@ class IndexController extends Controller
         // ارسال داده‌ها به ویو برای نمایش
         return view('show.articles', ['articles' => $articles]);
     }
-    public function showArticle2()
+    public function Homepage()
     {
         // دریافت همه مقالات از پایگاه داده
         $articles = Article::all();
 
         // ارسال داده‌ها به ویو برای نمایش
-        return view('show.articles2', ['articles' => $articles]);
+        return view('show.Homepage', ['articles' => $articles]);
     }
 }

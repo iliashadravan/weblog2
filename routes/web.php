@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\user\ArticleController;
 use App\Http\Controllers\user\CommentController;
-use App\Http\Controllers\user\IndexController;
+use App\Http\Controllers\user\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -43,10 +43,10 @@ Route::prefix('new')->controller(RegisterController::class)->group(function () {
 });
 
 // روت‌های نمایش مقاله‌ها
-Route::prefix('Index')->middleware('checkUserAuthenticated')->controller(IndexController::class)->group(function () {
+Route::prefix('Home')->middleware('checkUserAuthenticated')->controller(HomeController::class)->group(function () {
     Route::get('/articles', 'showArticle')->name('show.articles');
 });
-Route::get('/Index/articles/no/login', [IndexController::class, 'showArticle2'])->name('show.articles2');
+Route::get('/Home/articles/no/login', [HomeController::class, 'Homepage'])->name('Homepage');
 
 // روت‌های مربوط به کامنت‌ها
 Route::prefix('articles')->group(function () {

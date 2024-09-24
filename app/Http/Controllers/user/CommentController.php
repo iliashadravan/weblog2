@@ -32,7 +32,7 @@ class CommentController extends Controller
             'body' => 'required|string|max:1000',
         ]);
 
-// ایجاد ریپلای جدید برای کامنت
+        // ایجاد ریپلای جدید برای کامنت
         $comment->replies()->create([
             'body' => $request->body,
             'user_id' => auth()->id(),

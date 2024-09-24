@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->text('body');
-            $table->unsignedBigInteger('user_id'); // ID کاربری که کامنت را گذاشته است
+            $table->unsignedBigInteger('user_id');
             $table->morphs('commentable'); // این خط فیلدهای commentable_type و commentable_id را ایجاد می‌کند
             $table->timestamps();
 

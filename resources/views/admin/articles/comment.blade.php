@@ -191,7 +191,7 @@
         </tbody>
     </table>
     <br>
-    <a href="../../users/article">go back </a>
+    <a href="../users/article">go back </a>
 </div>
 </body>
 </html>

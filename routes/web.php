@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\User\ArticleController;
 use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\AdminUsersController;
+use App\Http\Controllers\Admin\AdminArticlesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,7 @@ use App\Http\Controllers\AuthController;
 
 // روت‌های مربوط به مقالات در پنل user
 Route::prefix('user')->middleware('checkUserAuthenticated')->group(function () {
+
     Route::prefix('articles')->controller(ArticleController::class)->group(function () {
         Route::get('/create', 'create')->name('user.articles.create');
         Route::post('/create', 'store')->name('user.articles.store');
@@ -27,7 +29,7 @@ Route::prefix('user')->middleware('checkUserAuthenticated')->group(function () {
     Route::get('/{user}/articles', [ArticleController::class, 'Index'])->name('user.articles');
 });
 
-// روت‌های لایک و امتیاز مقالات
+// روت‌های مربوط به لایک و امتیاز مقالات
 Route::prefix('articles')->group(function () {
     Route::post('/{article}/like', [ArticleController::class, 'like'])->name('article.like');
     Route::post('/{article}/rate', [ArticleController::class, 'rate'])->name('articles.rate');
@@ -57,20 +59,23 @@ Route::prefix('articles')->group(function () {
 Route::get('/search', [ArticleController::class, 'search'])->name('search');
 
 // روت‌های مربوط به پنل مدیریت
-Route::prefix('admin')->middleware('checkUserAuthenticated')->controller(AdminController::class)->group(function () {
-    Route::get('/users/article', 'Index')->name('users.article');
-    Route::prefix('articles')->group(function () {
+Route::prefix('admin')->middleware('checkUserAuthenticated')->group(function () {
+
+    Route::prefix('articles')->controller(AdminArticlesController::class)->group(function () {
+        Route::get('/users/article', 'Index')->name('users.article');
         Route::get('/{article}/edit', 'edit')->name('admin.articles.edit');
         Route::put('/{article}/edit', 'update')->name('admin.articles.update');
         Route::delete('/{article}', 'delete')->name('admin.articles.delete');
         Route::get('/{article}/comments', 'showComments')->name('admin.articles.comments');
     });
-    Route::put('/comments/{comment}/visibility', 'updateCommentVisibility')->name('admin.comments.updateVisibility');
 
-    Route::prefix('users')->group(function () {
-        Route::get('/{user}/edit', 'edit_user')->name('admin.users.edit');
-        Route::put('/{user}', 'update_user')->name('admin.users.update');
-        Route::delete('/{user}', 'destroy')->name('admin.users.destroy');
+    Route::put('/comments/{comment}/visibility', [AdminArticlesController::class, 'updateCommentVisibility'])
+        ->name('admin.comments.updateVisibility');
+
+    Route::prefix('users')->controller(AdminUsersController::class)->group(function () {
+        Route::get('/{user}/edit', 'edit')->name('admin.users.edit');
+        Route::put('/{user}', 'update')->name('admin.users.update');
+        Route::delete('/{user}', 'delete')->name('admin.users.destroy');
     });
 });
 

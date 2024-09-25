@@ -5,14 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
-use App\Models\User;
 use App\Models\Comment;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-
-
-class AdminController extends Controller
+class AdminArticlesController extends Controller
 {
     public function Index()
     {
@@ -59,41 +56,6 @@ class AdminController extends Controller
 
         return back();
     }
-
-    public function edit_user(User $user)
-    {
-        return view('admin.users.edit', compact('user'));
-    }
-
-    public function update_user(Request $request, User $user)
-    {
-        // اعتبارسنجی اطلاعات ورودی
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:3',
-        ]);
-
-        // به‌روزرسانی اطلاعات کاربر
-        $user->name = $request->name;
-        $user->email = $request->email;
-        if ($request->filled('password')) {
-            $user->password = bcrypt($request->password);   // رمز عبور جدید هش شده و در دیتابیس ذخیره می‌شود.
-        }
-        $user->save();
-
-        // بازگشت به صفحه مقالات پس از به‌روزرسانی موفقیت‌آمیز
-        return redirect()->route('users.article');
-    }
-
-    public function destroy(User $user)
-    {
-        $user->delete();
-
-        return redirect()->route('users.article');
-    }
-
-
     public function showComments(Article $article)
     {
         // گرفتن تمام کامنت‌های مربوط به یک مقاله
@@ -113,5 +75,4 @@ class AdminController extends Controller
         // ریدایرکت کردن به صفحه قبلی با پیام موفقیت
         return back()->with('success', 'Comment visibility updated successfully!');
     }
-
 }

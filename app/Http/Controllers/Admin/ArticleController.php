@@ -9,7 +9,7 @@ use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class AdminArticlesController extends Controller
+class ArticleController extends Controller
 {
     public function Index()
     {

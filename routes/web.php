@@ -6,8 +6,8 @@ use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Admin\AdminUsersController;
-use App\Http\Controllers\Admin\AdminArticlesController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\ArticleController as AdminArticlesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,7 +72,7 @@ Route::prefix('admin')->middleware('checkUserAuthenticated')->group(function () 
     Route::put('/comments/{comment}/visibility', [AdminArticlesController::class, 'updateCommentVisibility'])
         ->name('admin.comments.updateVisibility');
 
-    Route::prefix('users')->controller(AdminUsersController::class)->group(function () {
+    Route::prefix('users')->controller(AdminUserController::class)->group(function () {
         Route::get('/{user}/edit', 'edit')->name('admin.users.edit');
         Route::put('/{user}', 'update')->name('admin.users.update');
         Route::delete('/{user}', 'delete')->name('admin.users.destroy');

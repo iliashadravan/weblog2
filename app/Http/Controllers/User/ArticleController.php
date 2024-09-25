@@ -118,7 +118,7 @@ class ArticleController extends Controller
 
         if ($existing_rating) {
             // اگر کاربر قبلاً امتیاز داده، آن را به‌روزرسانی کن
-            $article->ratings()->updateExistingPivot($userId, [
+            $article->ratings()->updateExistingPivot($userId, [      // برای بروزرسانی مقدار rating در جدول پیوت استفاده می‌شود.
                 'rating' => $validatedData['rating'],
             ]);
         } else {
@@ -127,13 +127,8 @@ class ArticleController extends Controller
                 'rating' => $validatedData['rating'],
             ]);
         }
-
         return back();
     }
-
-
-
-
     public function search(Request $request)
     {
         $search_term = $request->input('query');

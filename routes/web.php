@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\user\ArticleController;
-use App\Http\Controllers\user\CommentController;
-use App\Http\Controllers\user\HomeController;
+use App\Http\Controllers\User\ArticleController;
+use App\Http\Controllers\User\CommentController;
+use App\Http\Controllers\User\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -17,7 +17,6 @@ use App\Http\Controllers\AuthController;
 // روت‌های مربوط به مقالات در پنل user
 Route::prefix('user')->middleware('checkUserAuthenticated')->group(function () {
     Route::prefix('articles')->controller(ArticleController::class)->group(function () {
-        Route::get('/', 'index')->name('user.articles.index');
         Route::get('/create', 'create')->name('user.articles.create');
         Route::post('/create', 'store')->name('user.articles.store');
         Route::get('/{article}/edit', 'edit')->name('user.articles.edit');
@@ -25,7 +24,7 @@ Route::prefix('user')->middleware('checkUserAuthenticated')->group(function () {
         Route::delete('/{article}', 'delete')->name('user.articles.delete');
     });
 
-    Route::get('/{user}/articles', [ArticleController::class, 'userArticles'])->name('user.articles');
+    Route::get('/{user}/articles', [ArticleController::class, 'Index'])->name('user.articles');
 });
 
 // روت‌های لایک و امتیاز مقالات
@@ -36,10 +35,10 @@ Route::prefix('articles')->group(function () {
 
 // روت‌های مربوط به ثبت‌نام و ورود
 Route::prefix('new')->controller(RegisterController::class)->group(function () {
-    Route::get('/register', 'register')->name('register');
-    Route::post('/register', 'store')->name('register.store');
-    Route::get('/login', 'login')->name('login.form');
-    Route::post('/login', 'index')->name('login');
+    Route::get('/register', 'register_blade')->name('register');
+    Route::post('/register', 'register')->name('register.store');
+    Route::get('/login', 'login_blade')->name('login.form');
+    Route::post('/login', 'login')->name('login');
 });
 
 // روت‌های نمایش مقاله‌ها
@@ -59,7 +58,7 @@ Route::get('/search', [ArticleController::class, 'search'])->name('search');
 
 // روت‌های مربوط به پنل مدیریت
 Route::prefix('admin')->middleware('checkUserAuthenticated')->controller(AdminController::class)->group(function () {
-    Route::get('/users/article', 'showArticles')->name('users.article');
+    Route::get('/users/article', 'Index')->name('users.article');
     Route::prefix('articles')->group(function () {
         Route::get('/{article}/edit', 'edit')->name('admin.articles.edit');
         Route::put('/{article}/edit', 'update')->name('admin.articles.update');

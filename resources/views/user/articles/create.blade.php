@@ -112,7 +112,7 @@
             <a href="{{ route('user.articles', ['user' => auth()->id()]) }}" class="btn btn-secondary">Show My Articles</a>
         </div>
         <div class="center-content">
-            <a href="/Index/articles" class="back-link">Back</a>
+            <a href="/Home/articles" class="back-link">Back</a>
         </div>
     </form>
 </div>

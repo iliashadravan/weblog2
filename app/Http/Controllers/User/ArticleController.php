@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\user;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
@@ -12,14 +12,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
-    public function index()
-    {
-        // نمایش تمام مقالات به صورت لیست
-        return view('user.articles.index', [
-            'articles' => Article::all()
-        ]);
-    }
-
     public function create()
     {
         // بازگشت به صفحه create با ارسال دسته‌بندی‌ها
@@ -90,7 +82,7 @@ class ArticleController extends Controller
         return back();
     }
 
-    public function userArticles(User $user)
+    public function Index(User $user)
     {
         // دریافت مقالات کاربر
         $articles = $user->articles;
@@ -144,17 +136,17 @@ class ArticleController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('query');
+        $search_term = $request->input('query');
 
         // جستجو بر اساس عنوان، محتوا، نویسنده یا دسته‌بندی
-        $articles = Article::query()->where(function ($query2) use ($query) {
-            $query2->where('title', 'LIKE', '%' . $query . '%')
-                ->orWhere('body', 'LIKE', '%' . $query . '%')
-                ->orWhereHas('user', function ($q) use ($query) {
-                    $q->where('name', 'LIKE', '%' . $query . '%');
+        $articles = Article::query()->where(function ($query) use ($search_term) {
+            $query->where('title', 'LIKE', '%' . $search_term . '%')
+                ->orWhere('body', 'LIKE', '%' . $search_term . '%')
+                ->orWhereHas('user', function ($q) use ($search_term) {
+                    $q->where('name', 'LIKE', '%' . $search_term . '%');
                 })
-                ->orWhereHas('categories', function ($q) use ($query) {
-                    $q->where('name', 'LIKE', '%' . $query . '%');
+                ->orWhereHas('categories', function ($q) use ($search_term) {
+                    $q->where('name', 'LIKE', '%' . $search_term . '%');
                 });
         })
 

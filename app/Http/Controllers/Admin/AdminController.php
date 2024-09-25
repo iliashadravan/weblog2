@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function showArticles()
+    public function Index()
     {
         $articles = Article::with('user')->get();
 

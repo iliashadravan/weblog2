@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
-    public function register()
+    public function register_blade()
     {
         return view('register');
     }
 
-    public function store(Request $request)
+    public function register(Request $request)
     {
         $validate_data = $request->validate([
             'name' => 'required|max:100',
@@ -33,12 +33,12 @@ class RegisterController extends Controller
         return redirect('new/login');
     }
 
-    public function login()
+    public function login_blade()
     {
         return view('login');
     }
 
-    public function index(Request $request)
+    public function login(Request $request)
     {
         $validate_data = $request->validate([
             'email' => 'required|email',

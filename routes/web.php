@@ -21,18 +21,18 @@ use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 Route::prefix('user')->middleware('checkUserAuthenticated')->group(function () {
 
     Route::prefix('articles')->controller(ArticleController::class)->group(function () {
-        Route::get('/',  'Index')->name('user.articles');
+        Route::get('/', 'Index')->name('user.articles');
         Route::get('/create', 'create')->name('user.articles.create');
         Route::post('/create', 'store')->name('user.articles.store');
         Route::get('/{article}/edit', 'edit')->name('user.articles.edit');
         Route::put('/{article}/edit', 'update')->name('user.articles.update');
         Route::delete('/{article}', 'delete')->name('user.articles.delete');
-        Route::post('/{article}/like',  'like')->name('article.like');
-        Route::post('/{article}/rate',  'rate')->name('articles.rate');
+        Route::post('/{article}/like', 'like')->name('article.like');
+        Route::post('/{article}/rate', 'rate')->name('articles.rate');
         Route::get('/search', 'search')->name('search')->withoutMiddleware('checkUserAuthenticated');
     });
-        Route::post('/{article}/comments', [CommentController::class, 'comment'])->name('comments.store');
-        Route::post('/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
+    Route::post('/{article}/comments', [CommentController::class, 'comment'])->name('comments.store');
+    Route::post('/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
 });
 
 // روت‌های مربوط به ثبت‌نام و ورود
@@ -57,7 +57,7 @@ Route::prefix('admin')->middleware('checkUserAuthenticated')->group(function () 
         Route::get('/{article}/edit', 'edit')->name('admin.articles.edit');
         Route::put('/{article}/edit', 'update')->name('admin.articles.update');
         Route::delete('/{article}', 'delete')->name('admin.articles.delete');
-        Route::get('/{article}/comments',[AdminCommentController::class, 'showComments'])->name('admin.articles.comments');
+        Route::get('/{article}/comments', [AdminCommentController::class, 'showComments'])->name('admin.articles.comments');
         Route::put('/comments/{comment}/visibility', [AdminCommentController::class, 'updateCommentVisibility'])
             ->name('admin.comments.updateVisibility');
     });

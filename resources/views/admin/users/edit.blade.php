@@ -110,7 +110,7 @@
     <button type="submit">Save changes</button>
 </form>
 
-<form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('آیا مطمئن هستید؟')">
+<form action="{{ route('admin.users.delete', $user->id) }}" method="POST" onsubmit="return confirm('آیا مطمئن هستید؟')">
     @csrf
     @method('DELETE')
 

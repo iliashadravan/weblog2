@@ -75,7 +75,7 @@ Route::prefix('admin')->middleware('checkUserAuthenticated')->group(function () 
     Route::prefix('users')->controller(AdminUserController::class)->group(function () {
         Route::get('/{user}/edit', 'edit')->name('admin.users.edit');
         Route::put('/{user}', 'update')->name('admin.users.update');
-        Route::delete('/{user}', 'delete')->name('admin.users.destroy');
+        Route::delete('/{user}', 'delete')->name('admin.users.delete');
     });
 });
 

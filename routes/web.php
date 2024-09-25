@@ -66,7 +66,7 @@ Route::prefix('admin')->middleware('checkUserAuthenticated')->group(function () 
         Route::get('/{article}/edit', 'edit')->name('admin.articles.edit');
         Route::put('/{article}/edit', 'update')->name('admin.articles.update');
         Route::delete('/{article}', 'delete')->name('admin.articles.delete');
-        Route::get('/{article}/comments', 'showComments')->name('admin.articles.comments');
+        Route::get('/{article}/comments', [AdminArticlesController::class ,'showComments'])->name('admin.articles.comments');
     });
 
     Route::put('/comments/{comment}/visibility', [AdminArticlesController::class, 'updateCommentVisibility'])

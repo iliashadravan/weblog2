@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\RegisterLoginController;
 use App\Http\Controllers\User\ArticleController;
 use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\HomeController;
@@ -36,7 +36,7 @@ Route::prefix('articles')->group(function () {
 });
 
 // روت‌های مربوط به ثبت‌نام و ورود
-Route::prefix('new')->controller(RegisterController::class)->group(function () {
+Route::prefix('new')->controller(RegisterLoginController::class)->group(function () {
     Route::get('/register', 'register_blade')->name('register');
     Route::post('/register', 'register')->name('register.store');
     Route::get('/login', 'login_blade')->name('login.form');

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class RegisterController extends Controller
+class RegisterLoginController extends Controller
 {
     public function register_blade()
     {

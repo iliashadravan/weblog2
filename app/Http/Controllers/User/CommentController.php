@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class CommentController extends Controller
 {
 // ذخیره کامنت جدید برای مقاله
-    public function store(Request $request, Article $article)
+    public function comment(Request $request, Article $article)
     {
         $request->validate([
             'body' => 'required|string|max:1000',

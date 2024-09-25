@@ -20,6 +20,5 @@ return new class extends Migration {
         Schema::table('comments', function (Blueprint $table) {
             $table->dropColumn('is_visible');
         });
-
     }
 };

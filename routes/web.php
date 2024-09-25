@@ -51,7 +51,7 @@ Route::get('/Home/articles/no/login', [HomeController::class, 'Homepage'])->name
 
 // روت‌های مربوط به کامنت‌ها
 Route::prefix('articles')->group(function () {
-    Route::post('/{article}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/{article}/comments', [CommentController::class, 'comment'])->name('comments.store');
     Route::post('/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
 });
 

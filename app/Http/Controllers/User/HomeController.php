@@ -7,7 +7,7 @@ use App\Models\Article;
 
 class HomeController extends Controller
 {
-    public function showArticle()
+    public function Index()
     {
         // دریافت همه مقالات از پایگاه داده
         $articles = Article::all();

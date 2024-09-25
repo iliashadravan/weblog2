@@ -82,8 +82,10 @@ class ArticleController extends Controller
         return back();
     }
 
-    public function Index(User $user)
+    public function Index()
     {
+        $user_id = auth()->id();
+        $user =User::find($user_id);
         // دریافت مقالات کاربر
         $articles = $user->articles;
 

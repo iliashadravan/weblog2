@@ -12,7 +12,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();  // سشن فعلی کاربر را نامعتبر می‌کند
         $request->session()->regenerateToken(); //یک توکن جدید برای سشن کاربر تولید می‌شود
-        return redirect('/Home/articles/no/login');
+        return redirect('Home');
     }
 }
 

@@ -198,7 +198,7 @@
     <div class="container">
         <h2 class="page-title">All Articles</h2>
         <div class="search-bar">
-            <form action="/search" method="GET">
+            <form action="/user/articles/search" method="GET">
                 <input type="text" name="query" placeholder="متن جستجو...">
                 <button type="submit">Search</button>
             </form>

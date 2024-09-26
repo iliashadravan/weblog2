@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
-    public function Index()
+    public function index()
     {
         $articles = Article::with('user')->get();
 

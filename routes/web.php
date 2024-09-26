@@ -45,7 +45,7 @@ Route::prefix('new')->controller(RegisterLoginController::class)->group(function
 
 // روت‌های نمایش مقاله‌ها
 Route::prefix('Home/articles')->middleware('checkUserAuthenticated')->controller(HomeController::class)->group(function () {
-    Route::get('/', 'Index')->name('show.articles');
+    Route::get('/', 'index')->name('show.articles');
 });
 Route::get('Home', [HomeController::class, 'Homepage'])->name('Homepage');
 

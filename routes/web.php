@@ -21,7 +21,7 @@ use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 Route::prefix('user')->middleware('checkUserAuthenticated')->group(function () {
 
     Route::prefix('articles')->controller(ArticleController::class)->group(function () {
-        Route::get('/', 'Index')->name('user.articles');
+        Route::get('/', 'index')->name('user.articles');
         Route::get('/create', 'create')->name('user.articles.create');
         Route::post('/create', 'store')->name('user.articles.store');
         Route::get('/{article}/edit', 'edit')->name('user.articles.edit');

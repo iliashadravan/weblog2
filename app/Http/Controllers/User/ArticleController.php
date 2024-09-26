@@ -9,14 +9,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
 class ArticleController extends Controller
 {
     public function create()
     {
         // بازگشت به صفحه create با ارسال دسته‌بندی‌ها
         return view('user.articles.create', [
-            'categories' => Category::all()
+            'categories' => Category::all(),
         ]);
     }
 
@@ -26,7 +25,7 @@ class ArticleController extends Controller
             'title' => 'required|min:3|max:100',
             'body' => 'required|min:5',
             'categories' => 'required|array',
-            'categories.*' => 'exists:categories,id'
+            'categories.*' => 'exists:categories,id',
         ]);
 
         // ایجاد مقاله جدید
@@ -49,7 +48,7 @@ class ArticleController extends Controller
         return view('user.articles.edit', [
             'article' => $article,
             'categories' => Category::all(),
-            'selectedCategories' => $article->categories->pluck('id')->toArray()
+            'selectedCategories' => $article->categories->pluck('id')->toArray(),
         ]);
     }
 
@@ -59,7 +58,7 @@ class ArticleController extends Controller
             'title' => 'required|min:3|max:50',
             'body' => 'required',
             'categories' => 'required|array',
-            'categories.*' => 'exists:categories,id'
+            'categories.*' => 'exists:categories,id',
         ])->validated();
 
         // به روز رسانی مقاله
@@ -71,7 +70,8 @@ class ArticleController extends Controller
         // همگام‌سازی دسته‌بندی‌ها با مقاله
         $article->categories()->sync($validate_data['categories']);
 
-        return redirect()->route('user.articles.create')->with('success', 'Article updated successfully!');
+        return redirect()->route('user.articles.create')
+            ->with('success', 'Article updated successfully!');
     }
 
     public function delete(Article $article)
@@ -82,16 +82,16 @@ class ArticleController extends Controller
         return back();
     }
 
-    public function Index()
+    public function index()
     {
         $user_id = auth()->id();
-        $user =User::find($user_id);
+        $user = User::find($user_id);
+
         // دریافت مقالات کاربر
         $articles = $user->articles;
 
         return view('user.articles.index', compact('articles'));
     }
-
 
     public function like(Article $article)
     {
@@ -120,7 +120,7 @@ class ArticleController extends Controller
 
         if ($existing_rating) {
             // اگر کاربر قبلاً امتیاز داده، آن را به‌روزرسانی کن
-            $article->ratings()->updateExistingPivot($userId, [      // برای بروزرسانی مقدار rating در جدول پیوت استفاده می‌شود.
+            $article->ratings()->updateExistingPivot($userId, [
                 'rating' => $validatedData['rating'],
             ]);
         } else {
@@ -129,27 +129,28 @@ class ArticleController extends Controller
                 'rating' => $validatedData['rating'],
             ]);
         }
+
         return back();
     }
+
     public function search(Request $request)
     {
         $search_term = $request->input('query');
 
         // جستجو بر اساس عنوان، محتوا، نویسنده یا دسته‌بندی
-        $articles = Article::query()->where(function ($query) use ($search_term) {
-            $query->where('title', 'LIKE', '%' . $search_term . '%')
-                ->orWhere('body', 'LIKE', '%' . $search_term . '%')
-                ->orWhereHas('user', function ($q) use ($search_term) {
-                    $q->where('name', 'LIKE', '%' . $search_term . '%');
-                })
-                ->orWhereHas('categories', function ($q) use ($search_term) {
-                    $q->where('name', 'LIKE', '%' . $search_term . '%');
-                });
-        })
-
+        $articles = Article::query()
+            ->where(function ($query) use ($search_term) {
+                $query->where('title', 'LIKE', '%' . $search_term . '%')
+                    ->orWhere('body', 'LIKE', '%' . $search_term . '%')
+                    ->orWhereHas('user', function ($q) use ($search_term) {
+                        $q->where('name', 'LIKE', '%' . $search_term . '%');
+                    })
+                    ->orWhereHas('categories', function ($q) use ($search_term) {
+                        $q->where('name', 'LIKE', '%' . $search_term . '%');
+                    });
+            })
             ->get();
 
         return view('user.articles.search_results', compact('articles'));
     }
-
 }

@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('articles', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('title', 50);
-            $table->string('slug' , 100 );
-            $table->text('body');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('articles')) {
+            Schema::create('articles', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
+                $table->string('title', 50);
+                $table->string('slug', 100);
+                $table->text('body');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

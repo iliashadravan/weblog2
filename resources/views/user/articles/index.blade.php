@@ -111,7 +111,7 @@
     </table>
     <br>
     <div class="center-content">
-        <a href="/Home/articles" class="back-link">Back</a>
+        <a href="/Home/user/index" class="back-link">Back</a>
     </div>
 </div>
 </body>

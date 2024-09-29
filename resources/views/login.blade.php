@@ -51,7 +51,7 @@
             <input type="password" id="password" name="password" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-custom">Entry</button>
-     <p>if you dont have account <a href="/new/register">register</a></p>
+     <p>if you dont have account <a href="/register">register</a></p>
     </form>
 </div>
 </body>

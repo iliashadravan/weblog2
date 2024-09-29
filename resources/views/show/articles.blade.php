@@ -198,10 +198,11 @@
     <div class="container">
         <h2 class="page-title">All Articles</h2>
         <div class="search-bar">
-            <form action="/user/articles/search" method="GET">
-                <input type="text" name="query" placeholder="متن جستجو...">
-                <button type="submit">Search</button>
+            <form action="{{ route('user.articles.index') }}" method="GET">
+                <input type="text" name="query" placeholder="جستجو">
+                <button type="submit">جستجو</button>
             </form>
+
         </div>
         <br>
         <table class="table table-striped table-bordered table-hover shadow-lg">
@@ -219,40 +220,41 @@
                         <p><strong>Writer:</strong> {{ $article->user ? $article->user->name : 'Anonymous' }}</p>
 
                         <div class="mt-3">
-                            <!-- دکمه لایک -->
-                            <form action="{{ route('article.like', $article) }}" method="POST"
-                                  style="display:inline;">
-                                @csrf
-                                <button
-                                    class="btn btn-like {{ $article->likes->contains('user_id', auth()->id()) ? 'btn-outline-success' : 'btn-like' }}">
-                                    <i class="fas fa-heart"></i>
-                                    @if($article->likes->contains('user_id', auth()->id()))
-                                        Liked
-                                    @else
-                                        Like
-                                    @endif
-                                    ({{ $article->likes->count() }})
-                                </button>
-                            </form>
+                            @auth
+                                <!-- دکمه لایک -->
+                                <form action="{{ route('article.like', $article) }}" method="POST"
+                                      style="display:inline;">
+                                    @csrf
+                                    <button
+                                        class="btn btn-like {{ $article->likes->contains('user_id', auth()->id()) ? 'btn-outline-success' : 'btn-like' }}">
+                                        <i class="fas fa-heart"></i>
+                                        @if($article->likes->contains('user_id', auth()->id()))
+                                            Liked
+                                        @else
+                                            Like
+                                        @endif
+                                        ({{ $article->likes->count() }})
+                                    </button>
+                                </form>
 
-                            <!-- امتیاز -->
-                            <form action="{{ route('articles.rate', $article) }}" method="POST"
-                                  style="display:inline-block;">
-                                @csrf
-                                <div class="form-group">
-                                    <label for="rating">Rate this article:</label>
-                                    <select name="rating" id="rating" class="form-control">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-rate mt-2">Rate</button>
-                                </div>
-                            </form>
-                            <p class="average-rating">Average
-                                Rating: {{ $article->averageRating() ?? 'No ratings yet' }}</p>
+                                <!-- امتیاز -->
+                                <form action="{{ route('articles.rate', $article) }}" method="POST"
+                                      style="display:inline-block;">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="rating">Rate this article:</label>
+                                        <select name="rating" id="rating" class="form-control">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-rate mt-2">Rate</button>
+                                    </div>
+                                </form>
+                                <p class="average-rating">Average
+                                    Rating: {{ $article->averageRating() ?? 'No ratings yet' }}</p>
                         </div>
 
                         <!-- فرم ارسال کامنت -->
@@ -271,7 +273,8 @@
                                     <p>{{ $comment->body }}</p>
 
                                     <!-- فرم ریپلای -->
-                                    <form action="{{ route('comments.reply', ['comment' => $comment->id]) }}" method="POST">
+                                    <form action="{{ route('comments.reply', ['comment' => $comment->id]) }}"
+                                          method="POST">
                                         @csrf
                                         <textarea name="body" placeholder="write your reply..." required></textarea>
                                         <button type="submit">Reply</button>
@@ -293,14 +296,24 @@
 
                     </td>
                 </tr>
+                @else
+                    <!-- پیغام برای کاربرانی که لاگین نکرده‌اند -->
+                    <p><strong>If you want to like or rate or add comment <a href="{{ route('login') }}">log in</a>
+                            first.</strong></p>
+                    <p><strong>If you dont have account <a href="{{ route('register') }}">Register</a>
+                            first. </strong></p>
+                @endauth
             @endforeach
             </tbody>
         </table>
-        <a href="../user/articles/create" class="btn btn-secondary">create a new article</a>
-        <form action="{{ url('logout') }}" method="POST">
-            @csrf
-            <button type="submit"> Logout</button>
-        </form>
+        <a href="/user/articles/create" class="btn btn-secondary">create a new article</a>
+        @auth
+            <form action="{{ url('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-secondary">Logout</button>
+            </form>
+        @endauth
+
     </div>
     </body>
 </head>

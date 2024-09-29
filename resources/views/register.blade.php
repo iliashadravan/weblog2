@@ -50,7 +50,7 @@
             </ul>
         </div>
     @endif
-    <form action="/new/register" method="post">
+    <form action="/register" method="post">
         @csrf
         <div class="form-group">
             <label for="name">name:</label>
@@ -66,7 +66,7 @@
         </div>
         <button type="submit" class="btn btn-custom">register</button>
         <br>
-        <p>if you dont have account <a href="/new/login">login</a></p>
+        <p>if you dont have account <a href="/login">login</a></p>
     </form>
 </div>
 </body>

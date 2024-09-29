@@ -10,9 +10,8 @@ class User extends Authenticatable implements AuthenticatableContract
     protected $fillable = [
         'name',
         'email',
-        'password',
+        'password'
     ];
-
     public function articles()
     {
         return $this->hasMany(Article::class, 'user_id');

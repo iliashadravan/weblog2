@@ -132,25 +132,4 @@ class ArticleController extends Controller
 
         return back();
     }
-
-    public function search(Request $request)
-    {
-        $search_term = $request->input('query');
-
-        // جستجو بر اساس عنوان، محتوا، نویسنده یا دسته‌بندی
-        $articles = Article::query()
-            ->where(function ($query) use ($search_term) {
-                $query->where('title', 'LIKE', '%' . $search_term . '%')
-                    ->orWhere('body', 'LIKE', '%' . $search_term . '%')
-                    ->orWhereHas('user', function ($q) use ($search_term) {
-                        $q->where('name', 'LIKE', '%' . $search_term . '%');
-                    })
-                    ->orWhereHas('categories', function ($q) use ($search_term) {
-                        $q->where('name', 'LIKE', '%' . $search_term . '%');
-                    });
-            })
-            ->get();
-
-        return view('user.articles.search_results', compact('articles'));
-    }
 }

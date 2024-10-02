@@ -34,7 +34,8 @@ class Article extends Model
 
     public function ratings()
     {
-        return $this->belongsToMany(User::class, 'ratings', 'article_id', 'user_id');
+        return $this->belongsToMany(User::class, 'ratings', 'article_id', 'user_id')
+            ->withPivot('rating');
     }
 
     public function averageRating()

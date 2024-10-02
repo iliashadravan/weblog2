@@ -11,7 +11,7 @@ class CreateRatingsTable extends Migration
         Schema::create('ratings', function (Blueprint $table) {
             $table->foreignId('article_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('rating')->unsigned()->default(0);
+            $table->integer('rating')->default(0);
 
             // کلید ترکیبی از دو ستون foreign key
             $table->primary(['article_id', 'user_id']);

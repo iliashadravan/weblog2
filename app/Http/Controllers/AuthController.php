@@ -63,7 +63,7 @@ class AuthController extends Controller
         $user = User::where('email', $validate_data['email'])->first();
 
         Auth::login($user); // لاگین کردن کاربر
-        if ($user->is_admin == true) {
+        if ($user->is_admin === true) {
             return redirect()->route('users.article');
         } else {
             return redirect()->route('user.articles.index');

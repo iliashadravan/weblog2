@@ -8,10 +8,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function edit(User $user)
-    {
-        return view('admin.users.edit', compact('user'));
-    }
+
 
     public function update(Request $request, User $user)
     {
@@ -30,14 +27,23 @@ class UserController extends Controller
         }
         $user->save();
 
-        // بازگشت به صفحه مقالات پس از به‌روزرسانی موفقیت‌آمیز
-        return redirect()->route('users.article');
+        // بازگشت اطلاعات به‌روز شده کاربر به صورت JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'User updated successfully!',
+            'user' => $user
+        ]);
     }
 
     public function delete(User $user)
     {
+        // حذف کاربر
         $user->delete();
 
-        return redirect()->route('users.article');
+        // بازگشت پیام موفقیت‌آمیز به صورت JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted successfully!'
+        ]);
     }
 }

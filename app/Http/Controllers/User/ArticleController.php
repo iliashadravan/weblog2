@@ -11,16 +11,16 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
-    public function create()
-    {
-        // بازگشت به صفحه create با ارسال دسته‌بندی‌ها
-        return view('user.articles.create', [
-            'categories' => Category::all(),
-        ]);
-    }
-
     public function store()
     {
+        // بررسی اینکه آیا کاربر وارد شده است یا خیر
+        if (!auth()->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'لطفاً ابتدا وارد شوید.'
+            ], 401);
+        }
+
         $validate_data = $this->validate(request(), [
             'title' => 'required|min:3|max:100',
             'body' => 'required|min:5',
@@ -32,26 +32,19 @@ class ArticleController extends Controller
         $article = Article::create([
             'title' => $validate_data['title'],
             'body' => $validate_data['body'],
-            'user_id' => auth()->id(),
+            'user_id' => auth()->id(), // اینجا کاربر لاگین شده را به مقاله نسبت می‌دهید
         ]);
 
         // پیوست کردن دسته‌بندی‌ها به مقاله
         $article->categories()->attach($validate_data['categories']);
 
-        // هدایت به صفحه مقالات کاربر
-        return redirect()->route('user.articles', ['user' => auth()->id()]);
-    }
-
-    public function edit(Article $article)
-    {
-        // بازگشت به صفحه ویرایش با ارسال دسته‌بندی‌ها
-        return view('user.articles.edit', [
-            'article' => $article,
-            'categories' => Category::all(),
-            'selectedCategories' => $article->categories->pluck('id')->toArray(),
+        // بازگشت اطلاعات مقاله ایجاد شده به صورت JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'مقاله با موفقیت ایجاد شد.',
+            'article' => $article
         ]);
     }
-
     public function update(Article $article)
     {
         $validate_data = Validator::make(request()->all(), [
@@ -70,8 +63,11 @@ class ArticleController extends Controller
         // همگام‌سازی دسته‌بندی‌ها با مقاله
         $article->categories()->sync($validate_data['categories']);
 
-        return redirect()->route('user.articles.create')
-            ->with('success', 'Article updated successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Article updated successfully!',
+            'article' => $article
+        ]);
     }
 
     public function delete(Article $article)
@@ -79,7 +75,10 @@ class ArticleController extends Controller
         // حذف مقاله
         $article->delete();
 
-        return back();
+        return response()->json([
+            'success' => true,
+            'message' => 'Article deleted successfully!'
+        ]);
     }
 
     public function index()
@@ -87,10 +86,12 @@ class ArticleController extends Controller
         $user_id = auth()->id();
         $user = User::find($user_id);
 
-        // دریافت مقالات کاربر
         $articles = $user->articles;
 
-        return view('user.articles.index', compact('articles'));
+        return response()->json([
+            'success' => true,
+            'articles' => $articles
+        ]);
     }
 
     public function like(Article $article)
@@ -100,11 +101,16 @@ class ArticleController extends Controller
         // بررسی اینکه آیا کاربر مقاله را لایک کرده یا نه
         if ($article->likes()->where('user_id', $userId)->exists()) {
             $article->likes()->detach($userId);
+            $liked = false;
         } else {
             $article->likes()->attach($userId);
+            $liked = true;
         }
 
-        return back();
+        return response()->json([
+            'success' => true,
+            'liked' => $liked,
+        ]);
     }
 
     public function rate(Request $request, Article $article)
@@ -123,13 +129,18 @@ class ArticleController extends Controller
             $article->ratings()->updateExistingPivot($userId, [
                 'rating' => $validatedData['rating'],
             ]);
+            $rated = 'updated';
         } else {
             // در غیر این صورت، امتیاز جدید را ایجاد کن
             $article->ratings()->attach($userId, [
                 'rating' => $validatedData['rating'],
             ]);
+            $rated = 'created';
         }
 
-        return back();
+        return response()->json([
+            'success' => true,
+            'message' => "Rating {$rated} successfully!",
+        ]);
     }
 }

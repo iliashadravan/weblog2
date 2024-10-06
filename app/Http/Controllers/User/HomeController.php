@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function Index(Request $request)
+    public function index(Request $request)
     {
         // دریافت عبارت جستجو از ورودی کاربر
         $search_term = $request->input('query');
@@ -28,7 +28,7 @@ class HomeController extends Controller
                         });
                 })
                 ->get();
-                    return view('user.articles.search_results', compact('articles'));
+                    return response()->json($articles);
 
         } else {
             // در غیر این صورت، همه مقالات را نمایش بده
@@ -36,6 +36,6 @@ class HomeController extends Controller
         }
 
         // ارسال داده‌ها به ویو برای نمایش
-        return view('show.articles', ['articles' => $articles]);
+        return response()->json($articles);
     }
 }

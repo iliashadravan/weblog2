@@ -13,38 +13,41 @@ class ArticleController extends Controller
     {
         $articles = Article::with('user')->get();
 
-        return view('admin.articles.users_article', compact('articles'));
-
-    }
-
-    public function edit(Article $article)
-    {
-        return view('admin.articles.edit', [
-            'article' => $article,
-            'categories' => Category::all(),
-            'selectedCategories' => $article->categories->pluck('id')->toArray()
+        return response()->json([
+            'success' => true,
+            'articles' => $articles
         ]);
     }
-
     public function update(Article $article)
     {
-        $validate_data = Validator::make(request()->all(), [
+        $validator = Validator::make(request()->all(), [
             'title' => 'required|min:3|max:50',
             'body' => 'required',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id'
-        ])->validated();
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         // به روز رسانی مقاله
         $article->update([
-            'title' => $validate_data['title'],
-            'body' => $validate_data['body'],
+            'title' => $validator->validated()['title'],
+            'body' => $validator->validated()['body'],
         ]);
 
         // همگام‌سازی دسته‌بندی‌ها با مقاله
-        $article->categories()->sync($validate_data['categories']);
+        $article->categories()->sync($validator->validated()['categories']);
 
-        return redirect()->route('users.article')->with('success', 'Article updated successfully!');
+        return response()->json([
+            'success' => true,
+            'article' => $article,
+            'massage' => 'Article updated successfully'
+        ]);
     }
 
     public function delete(Article $article)
@@ -52,7 +55,9 @@ class ArticleController extends Controller
         // حذف مقاله
         $article->delete();
 
-        return back();
+        return response()->json([
+            'success' => true,
+            'message' => 'Article deleted successfully!'
+        ]);
     }
-
 }

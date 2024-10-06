@@ -22,7 +22,10 @@ class CommentController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        return back()->with('success', 'نظر شما با موفقیت ثبت شد.');
+        return response()->json([
+         'message' => 'Comment added',
+         'success' => true,
+    ]);
     }
 
 // ذخیره ریپلای برای یک کامنت
@@ -38,7 +41,10 @@ class CommentController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        return back()->with('success', 'پاسخ شما با موفقیت ثبت شد.');
+        return response()->json([
+            'message' => 'Comment replied',
+            'success' => true,
+        ]);
     }
 
 }

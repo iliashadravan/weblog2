@@ -11,10 +11,14 @@ class CommentController extends Controller
 {
     public function showComments(Article $article)
     {
-        // گرفتن تمام کامنت‌های مربوط به یک مقاله
+        // گرفتن تمام کامنت‌های مربوط به یک مقاله همراه با پاسخ‌ها
         $comments = Comment::where('commentable_id', $article->id)->with('replies')->get();
 
-        return view('admin.articles.comment', compact('article', 'comments'));
+        return response()->json([
+            'success' => true,
+            'article' => $article,
+            'comments' => $comments
+        ]);
     }
 
     public function updateCommentVisibility(Request $request, Comment $comment)
@@ -25,7 +29,10 @@ class CommentController extends Controller
         // ذخیره‌سازی تغییرات
         $comment->save();
 
-        // ریدایرکت کردن به صفحه قبلی با پیام موفقیت
-        return back()->with('success', 'Comment visibility updated successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Comment visibility updated successfully!',
+            'comment' => $comment
+        ]);
     }
 }

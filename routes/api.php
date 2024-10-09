@@ -22,43 +22,48 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-    // روت‌های مربوط به مقالات در پنل کاربر
-    Route::prefix('user/articles')->controller(ArticleController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::post('/create', 'store');
-        Route::put('/{article}/edit', 'update');
-        Route::delete('/{article}', 'delete');
-        Route::post('/{article}/like', 'like');
-        Route::post('/{article}/rate', 'rate');
+    Route::prefix('user')->group(function () {
+
+        Route::prefix('articles')->controller(ArticleController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/create', 'store');
+            Route::put('/edit/{article}', 'update');
+            Route::delete('delete/{article}', 'delete');
+            Route::post('/like/{article}', 'like');
+            Route::post('/rate/{article}', 'rate');
+        });
+        Route::prefix('comments')->controller(CommentController::class)->group(function () {
+            Route::post('/{article}', 'comment');
+            Route::post('/reply/{comment}', 'reply');
+        });
     });
 
-    Route::post('/user/{article}/comments', [CommentController::class, 'comment']);
-    Route::post('/user/{comment}/reply', [CommentController::class, 'reply']);
 
-    // روت‌های مربوط به مقالات پنل مدیریت
-    Route::prefix('admin/articles')->controller(AdminArticlesController::class)->group(function () {
+Route::prefix('admin')->group(function () {
+    Route::prefix('articles')->controller(AdminArticlesController::class)->group(function () {
         Route::get('/users/article', 'index');
-        Route::put('/{article}/edit', 'update');
-        Route::delete('/{article}', 'delete');
-        Route::get('/{article}/comments',[AdminCommentController::class,'showComments']);
-        Route::put('/comments/{comment}/visibility',[AdminCommentController::class,'updateCommentVisibility']);
+        Route::put('/edit/{article}', 'update');
+        Route::delete('delete/{article}', 'delete');
+    });
+    Route::prefix('comments')->controller(AdminCommentController::class)->group(function () {
+        Route::get('/{article}', 'showComments');
+        Route::put('/visibility/{comment}','updateCommentVisibility');
     });
 
-    Route::prefix('admin/users')->controller(AdminUserController::class)->group(function () {
+    Route::prefix('users')->controller(AdminUserController::class)->group(function () {
         Route::put('/{user}', 'update');
         Route::delete('/{user}', 'delete');
     });
 });
+});
 
-// روت‌های مربوط به ثبت‌نام و ورود
-Route::controller(AuthController::class)->group(function () {
+Route::prefix('Auth')->controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
     Route::post('/logout', 'logout');
 });
 
-// روت‌های نمایش مقاله‌ها
-Route::prefix('home/user')->controller(HomeController::class)->group(function () {
+Route::prefix('home')->controller(HomeController::class)->group(function () {
     Route::get('/index', [HomeController::class, 'index']);
 });
 

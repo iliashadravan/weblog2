@@ -1,11 +1,11 @@
 <?php
 
-
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Http\Resources\ArticleResource;
 
 class HomeController extends Controller
 {
@@ -27,15 +27,14 @@ class HomeController extends Controller
                             $q->where('name', 'LIKE', '%' . $search_term . '%');
                         });
                 })
+                ->with(['likes', 'ratings']) // لایک‌ها و امتیازها را همراه داده‌ها دریافت کن
                 ->get();
-                    return response()->json($articles);
-
         } else {
             // در غیر این صورت، همه مقالات را نمایش بده
-            $articles = Article::all();
+            $articles = Article::with(['likes', 'ratings'])->get();
         }
 
-        // ارسال داده‌ها به ویو برای نمایش
-        return response()->json($articles);
+        // تبدیل مجموعه مقالات به Resource و ارسال پاسخ
+        return ArticleResource::collection($articles);
     }
 }

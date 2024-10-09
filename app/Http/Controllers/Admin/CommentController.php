@@ -24,7 +24,7 @@ class CommentController extends Controller
     public function updateCommentVisibility(Request $request, Comment $comment)
     {
         // بروزرسانی وضعیت قابل مشاهده بودن کامنت
-        $comment->is_visible = $request->has('is_visible');
+        $comment->is_visible = $request->get('is_visible');
 
         // ذخیره‌سازی تغییرات
         $comment->save();

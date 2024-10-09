@@ -17,8 +17,8 @@ class ArticleResource extends JsonResource
         return [
             'title' => $this->title,
             'body' => $this->body,
-            'likes_count' => $this->likes->count(), // تعداد لایک‌ها
-            'average_rate' => $this->averageRating() ?? 'No rating', // میانگین امتیاز
+            'likes_count' => $this->likes->count(),
+            'average_rate' => $this->averageRating() ?? 'No rating',
         ];
     }
 }

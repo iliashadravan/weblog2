@@ -23,12 +23,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('user')->group(function () {
-
         Route::prefix('articles')->controller(ArticleController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/create', 'store');
             Route::put('/edit/{article}', 'update');
-            Route::delete('delete/{article}', 'delete');
+            Route::delete('/delete/{article}', 'delete');
             Route::post('/like/{article}', 'like');
             Route::post('/rate/{article}', 'rate');
         });
@@ -38,33 +37,32 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 
+    Route::prefix('admin')->group(function () {
+        Route::prefix('articles')->controller(AdminArticlesController::class)->group(function () {
+            Route::get('/users/article', 'index');
+            Route::put('/edit/{article}', 'update');
+            Route::delete('/delete/{article}', 'delete');
+        });
+        Route::prefix('comments')->controller(AdminCommentController::class)->group(function () {
+            Route::get('/{article}', 'showComments');
+            Route::put('/visibility/{comment}','updateCommentVisibility');
+        });
 
-Route::prefix('admin')->group(function () {
-    Route::prefix('articles')->controller(AdminArticlesController::class)->group(function () {
-        Route::get('/users/article', 'index');
-        Route::put('/edit/{article}', 'update');
-        Route::delete('delete/{article}', 'delete');
-    });
-    Route::prefix('comments')->controller(AdminCommentController::class)->group(function () {
-        Route::get('/{article}', 'showComments');
-        Route::put('/visibility/{comment}','updateCommentVisibility');
-    });
-
-    Route::prefix('users')->controller(AdminUserController::class)->group(function () {
-        Route::put('/{user}', 'update');
-        Route::delete('/{user}', 'delete');
+        Route::prefix('users')->controller(AdminUserController::class)->group(function () {
+            Route::put('/{user}', 'update');
+            Route::delete('/{user}', 'delete');
+        });
     });
 });
-});
 
-Route::prefix('Auth')->controller(AuthController::class)->group(function () {
+Route::prefix('auth')->controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
     Route::post('/logout', 'logout');
 });
 
 Route::prefix('home')->controller(HomeController::class)->group(function () {
-    Route::get('/index', [HomeController::class, 'index']);
+    Route::get('/index', 'index');
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

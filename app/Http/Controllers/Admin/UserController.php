@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-
-
     public function update(Request $request, User $user)
     {
+        // بررسی مجوز کاربر برای به‌روزرسانی
+        $this->authorize('update', $user);
+
         // اعتبارسنجی اطلاعات ورودی
         $request->validate([
             'name' => 'required|string|max:255',
@@ -22,9 +23,11 @@ class UserController extends Controller
         // به‌روزرسانی اطلاعات کاربر
         $user->name = $request->name;
         $user->email = $request->email;
+
         if ($request->filled('password')) {
-            $user->password = bcrypt($request->password);   // رمز عبور جدید هش شده و در دیتابیس ذخیره می‌شود.
+            $user->password = bcrypt($request->password);
         }
+
         $user->save();
 
         // بازگشت اطلاعات به‌روز شده کاربر به صورت JSON
@@ -37,10 +40,12 @@ class UserController extends Controller
 
     public function delete(User $user)
     {
+        // بررسی مجوز کاربر برای حذف
+        $this->authorize('delete', $user);
+
         // حذف کاربر
         $user->delete();
 
-        // بازگشت پیام موفقیت‌آمیز به صورت JSON
         return response()->json([
             'success' => true,
             'message' => 'User deleted successfully!'

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -25,12 +25,13 @@ class AuthController extends Controller
             'password' => Hash::make($validate_data['password']),
         ]);
 
-        // ورود کاربر به سیستم
-        Auth::login($user);
+        // ایجاد توکن برای کاربر
+        $token = JWTAuth::fromUser($user);
 
         return response()->json([
             'message' => 'ثبت‌نام موفقیت‌آمیز بود.',
-            'user' => $user
+            'user' => $user,
+            'token' => $token,
         ], 201);
     }
 
@@ -41,35 +42,42 @@ class AuthController extends Controller
             'password' => 'required|min:3',
         ]);
 
-        // پیدا کردن کاربر با ایمیل
-        $user = User::where('email', $validate_data['email'])->first();
-
-        // بررسی اعتبار کاربر
-        if (!$user || !Hash::check($validate_data['password'], $user->password)) {
+        // اعتبارسنجی کاربر
+        if (!$token = JWTAuth::attempt($validate_data)) {
             return response()->json(['message' => 'ایمیل یا رمز عبور اشتباه است.'], 401);
         }
 
-        // ورود کاربر به سیستم
-        Auth::login($user); // لاگین کردن کاربر
+        // پیدا کردن کاربر با ایمیل
+        $user = User::where('email', $validate_data['email'])->first();
 
         return response()->json([
             'message' => 'ورود موفقیت‌آمیز بود.',
             'user' => $user,
-            'token' => $user->createToken('YourAppName')->plainTextToken, // ایجاد توکن برای کاربر
+            'token' => $token,
         ], 200);
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-
-        // از بین بردن توکن
-        if ($request->user()) {
-            $request->user()->currentAccessToken()->delete();
-        }
+        // خروج کاربر و از بین بردن توکن
+        JWTAuth::invalidate(JWTAuth::getToken());
 
         return response()->json([
             'message' => 'خروج موفقیت‌آمیز بود.',
         ], 200);
+    }
+
+    public function me()
+    {
+        // دریافت اطلاعات کاربر احراز شده
+        return response()->json(auth()->user());
+    }
+
+    public function refresh()
+    {
+        // تازه‌سازی توکن
+        return response()->json([
+            'token' => JWTAuth::refresh(JWTAuth::getToken()),
+        ]);
     }
 }

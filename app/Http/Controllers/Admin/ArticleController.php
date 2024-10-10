@@ -4,22 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
-use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::with('user')->get();
+        $articles = Article::with('user')->paginate(10);
 
         return response()->json([
             'success' => true,
             'articles' => $articles
         ]);
     }
+
     public function update(Article $article)
     {
+        $this->authorize('update', $article);
+
         $validator = Validator::make(request()->all(), [
             'title' => 'required|min:3|max:50',
             'body' => 'required',
@@ -45,13 +47,15 @@ class ArticleController extends Controller
 
         return response()->json([
             'success' => true,
-            'article' => $article,
-            'massage' => 'Article updated successfully'
+            'message' => 'Article updated successfully',
+            'article' => $article
         ]);
     }
 
     public function delete(Article $article)
     {
+        $this->authorize('delete', $article);
+
         // حذف مقاله
         $article->delete();
 

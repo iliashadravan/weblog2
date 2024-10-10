@@ -13,14 +13,6 @@ class ArticleController extends Controller
 {
     public function store()
     {
-        // بررسی اینکه آیا کاربر وارد شده است یا خیر
-        if (!auth()->check()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'لطفاً ابتدا وارد شوید.'
-            ], 401);
-        }
-
         $validate_data = $this->validate(request(), [
             'title' => 'required|min:3|max:100',
             'body' => 'required|min:5',
@@ -45,9 +37,13 @@ class ArticleController extends Controller
             'article' => $article
         ]);
     }
-    public function update(Article $article)
+
+    public function update(Request $request, Article $article)
     {
-        $validate_data = Validator::make(request()->all(), [
+        // بررسی مجوز کاربر برای به‌روزرسانی مقاله
+        $this->authorize('update', $article);
+
+        $validate_data = Validator::make($request->all(), [
             'title' => 'required|min:3|max:50',
             'body' => 'required',
             'categories' => 'required|array',
@@ -72,6 +68,9 @@ class ArticleController extends Controller
 
     public function delete(Article $article)
     {
+        // بررسی مجوز کاربر برای حذف مقاله
+        $this->authorize('delete', $article);
+
         // حذف مقاله
         $article->delete();
 
@@ -80,6 +79,8 @@ class ArticleController extends Controller
             'message' => 'Article deleted successfully!'
         ]);
     }
+
+
 
     public function index()
     {
@@ -93,6 +94,7 @@ class ArticleController extends Controller
             'articles' => $articles
         ]);
     }
+
 
     public function like(Article $article)
     {
